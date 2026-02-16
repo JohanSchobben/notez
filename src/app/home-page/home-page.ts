@@ -28,7 +28,7 @@ export class HomePage {
   }
 
   protected deleteNote(note: Note) {
-    this.store.dispatch(deleteNote({id: note.id}));
+    this.store.dispatch(deleteNote({id: note.id!}));
   }
 
   protected openInput() {

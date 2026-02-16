@@ -13,6 +13,7 @@ const initialState: NotezExplorerState = {
 
 export const notezExplorerReducer = createReducer(
   initialState,
-  on(NotezExplorerActions.createNote, (state, {title}) => ({...state, notez: [...state.notez, {title, id: state.notez.length + 1, lastOpenedAt: new Date(), createdAt: new Date()}]})),
-  on(NotezExplorerActions.deleteNote, (state, {id}) => ({...state, notez: state.notez.filter(note => note.id !== id)}))
+  on(NotezExplorerActions.loadNotezSuccess, (state, {notez}) => ({...state, notez})),
+  on(NotezExplorerActions.storeNoteSuccess, (state, {note}) => ({...state, notez: [...state.notez, note]})),
+  on(NotezExplorerActions.deleteNoteSuccess, (state, {id}) => ({...state, notez: state.notez.filter(note => note.id !== id)}))
 )
