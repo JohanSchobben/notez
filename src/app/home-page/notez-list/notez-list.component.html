@@ -1,0 +1,14 @@
+@for (note of notes(); track note.id) {
+  <div class="flex hover:text-white hover:bg-green-400 px-4 py-1 rounded-md">
+    <a class="flex-1">
+      <span class="font-bold block">{{note.title}}</span>
+      <span class="block text-xs">{{note.createdAt | date:"MM-dd-yyyy"}}</span>
+    </a>
+    <div class="flex justify-center items-center">
+      <button (click)="deleteCurrentNote(note)" class="hover:text-white rounded-full py-3 px-4 aspect-square bg-gray-200">
+        <i class="fa-solid fa-trash"></i>
+      </button>
+    </div>
+  </div>
+
+}

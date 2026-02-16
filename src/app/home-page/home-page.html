@@ -1,0 +1,19 @@
+@let notez = notes$ | async;
+
+<div class="pt-32 pb-8 flex flex-col items-center justify-end mb-4">
+  <h1 class="text-7xl font-bold">Notez</h1>
+  <div class="mt-4 relative w-full">
+    <button (click)="openInput()" class="left-1/2 absolute -translate-x-1/2 bg-green-300 hover:bg-green-400 active:bg-green-600 text-white rounded-sm py-1 px-4 focus:outline-2 focus:outline-green-600">New Note</button>
+    @if (showInput()) {
+      <div class="absolute top-full left-1/2 translate-y-full -translate-x-1/2">
+        <input ntzAutofocus (keyup.enter)="createNote($event.target!.value)" class="w-64 h-10 bg-gray-200 rounded-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent" type="text" placeholder="Note title">
+      </div>
+    }
+  </div>
+</div>
+@if (notez) {
+  <div class="w-md mx-auto">
+    <ntz-notez-list [notes]="notez" (deleteNote)="deleteNote($event)"/>
+  </div>
+}
+
