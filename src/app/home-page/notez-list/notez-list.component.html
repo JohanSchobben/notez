@@ -1,6 +1,6 @@
 @for (note of notes(); track note.id) {
   <div class="flex hover:text-white hover:bg-green-400 px-4 py-1 rounded-md">
-    <a class="flex-1">
+    <a class="flex-1" [routerLink]="['/note', note.id]">
       <span class="font-bold block">{{note.title}}</span>
       <span class="block text-xs">{{note.createdAt | date:"MM-dd-yyyy"}}</span>
     </a>

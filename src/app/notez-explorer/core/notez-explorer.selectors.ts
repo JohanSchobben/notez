@@ -8,3 +8,5 @@ export const selectAllNotez = createSelector(
   selectorNotesExplorer,
   (notes: NotezExplorerState) => [...notes.notez].sort((a, b) => b.lastOpenedAt.getTime() - a.lastOpenedAt.getTime())
 )
+
+export const selectNotezById = (id: string) => createSelector(selectAllNotez, notez => notez.find(note => note.id === +id))
