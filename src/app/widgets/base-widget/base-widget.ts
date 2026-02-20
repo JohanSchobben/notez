@@ -6,6 +6,7 @@ import {
 import {CdkDrag, CdkDragEnd, CdkDragHandle, CdkDragMove} from '@angular/cdk/drag-drop';
 import {Position, Widget} from '../../notez/core/models/widget';
 import {deleteWidget} from '../../notez/core/notez.efffects';
+import {moveForward} from '../../notez/core/notez.actions';
 
 @Component({
   selector: 'ntz-base-widget',
@@ -26,6 +27,8 @@ export class BaseWidget {
   public widget = input.required<Widget>()
   public moved = output<Position>()
   public removed = output<void>();
+  public movedForward = output<void>();
+  public movedBackward = output<void>();
 
   @HostListener('window:click', ['$event'])
   onClick(event: MouseEvent): void {
@@ -64,6 +67,14 @@ export class BaseWidget {
       controlsEl!.style.bottom = posStyle;
       controlsEl!.style.top = 'unset';
     }
+  }
+
+  protected moveBackward(): void {
+    this.movedBackward.emit();
+  }
+
+  protected moveForward(): void {
+    this.movedForward.emit();
   }
 
   protected deleteWidget(): void {

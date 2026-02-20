@@ -1,13 +1,20 @@
 <div cdkDrag #widgetElement [cdkDragFreeDragPosition]="widget().position"
      (cdkDragEnded)="updatePosition($event)"
+     [style.z-index]="isFocused() ? 1000 : widget().elevation"
      class="relative inline-block" [cdkDragDisabled]="!isFocused()">
   @if (isFocused()) {
-    <div #widgetControls class="border absolute flex left-1/2 -translate-x-1/2 py-1 border-gray-300 shadow rounded-full">
+    <div #widgetControls style="z-index: 1000" class="border bg-white absolute flex left-1/2 -translate-x-1/2 py-1 border-gray-300 shadow rounded-full">
       <button cdkDragHandle class="py-2 px-4 rounded-full">
         <i class="fa-solid fa-align-justify"></i>
       </button>
       <button (click)="deleteWidget()" class="py-2 px-4 rounded-full">
         <i class="fa-solid fa-trash"></i>
+      </button>
+      <button (click)="moveForward()" class="py-2 px-4 rounded-full">
+        <i class="fa-solid fa-arrow-up"></i>
+      </button>
+      <button (click)="moveBackward()" class="py-2 px-4 rounded-full">
+        <i class="fa-solid fa-arrow-down"></i>
       </button>
     </div>
   }

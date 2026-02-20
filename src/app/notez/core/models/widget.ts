@@ -9,6 +9,7 @@ export type Position = {
 export type Widget = {
   id?: number;
   position: Position;
+  elevation: number;
   type: WidgetType;
   meta: any;
   noteId: number;

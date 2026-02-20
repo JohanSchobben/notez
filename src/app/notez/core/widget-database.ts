@@ -34,7 +34,21 @@ export class WidgetDatabase {
       );
   }
 
+  public updateElevation(id: number, elevation: number): Observable<Widget> {
+    return this.database.getDataById(this.storeName, id)
+      .pipe(
+        exhaustMap(widget => {
+          if (widget === undefined) {
+            return throwError(() => new Error(`Widget with id ${id} not found`));
+          }
+          return this.database.update(this.storeName, {...widget, elevation});
+        })
+      );
+
+  }
+
   public updateWidget(widget: Widget): Observable<Widget> {
     return this.database.update(this.storeName, widget);
   }
+
 }

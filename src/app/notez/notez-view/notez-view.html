@@ -15,7 +15,9 @@
       <ntz-base-widget
         [widget]="widget"
         (moved)="updatePosition(widget.id!, $event)"
-        (removed)="deleteWidget(widget.id!)">
+        (removed)="deleteWidget(widget.id!)"
+        (movedBackward)="moveBackward(widget)"
+        (movedForward)="moveForward(widget)">
         <div class="size-40  bg-white grid place-items-center border border-gray-600">
           <pre>
             <code>{{widget | json }}</code>

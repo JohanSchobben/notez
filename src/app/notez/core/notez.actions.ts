@@ -11,3 +11,5 @@ export const updateWidget = createAction('[Notez] Update Widget', props<{widget:
 export const updateWidgetSuccess = createAction('[Notez] Update Widget success', props<{widget: Widget}>());
 export const removeWidget = createAction('[Notez] Remove Widget', props<{widgetId: number}>());
 export const removeWidgetSuccess = createAction('[Notez] Remove Widget Success', props<{widgetId: number}>());
+export const moveBack = createAction('[Notez] Move Back', props<{widget: Widget}>());
+export const moveForward = createAction('[Notez] Move Forward', props<{widget: Widget}>());

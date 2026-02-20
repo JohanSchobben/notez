@@ -7,9 +7,9 @@ import {Note} from '../../shared/models/note';
 import {AsyncPipe, JsonPipe} from '@angular/common';
 import {BaseWidget} from '../../widgets/base-widget/base-widget';
 import {Position, Widget, WidgetType} from '../core/models/widget';
-import {addWidget, loadWidgets, moveWidget, removeWidget} from '../core/notez.actions';
+import {addWidget, loadWidgets, moveBack, moveForward, moveWidget, removeWidget} from '../core/notez.actions';
 
-import {getAllWidgetsForNote} from '../core/notez.selector';
+import {getAllWidgetsForNote, getNextElevation} from '../core/notez.selector';
 import {loadNotez} from '../../notez-explorer/core/notez-explorer.actions';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
@@ -26,6 +26,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 export class NotezView {
   private readonly route = inject(ActivatedRoute);
   private readonly store = inject(Store);
+  private nextElevation = 0;
 
   protected note$: Observable<Note>;
   protected widgets$: Observable<Widget[]>
@@ -55,6 +56,10 @@ export class NotezView {
         }),
         tap(widgets => console.log(widgets))
       );
+    this.store.select(getNextElevation)
+      .pipe(
+        takeUntilDestroyed()
+      ).subscribe(elevation => this.nextElevation = elevation);
   }
 
   protected addWidget(type: WidgetType = "debug") {
@@ -62,6 +67,7 @@ export class NotezView {
       meta: undefined,
       noteId: +this.route.snapshot.params['id'],
       type: type,
+      elevation: this.nextElevation,
       position: {
         x: 30,
         y: 30
@@ -72,11 +78,17 @@ export class NotezView {
 
   protected updatePosition(widgetId: number, position: Position) {
     this.store.dispatch(moveWidget({widgetId, ...position}));
+  }
 
+  protected moveBackward(widget: Widget) {
+    this.store.dispatch(moveBack({widget}));
+  }
+
+  protected moveForward(widget: Widget) {
+    this.store.dispatch(moveForward({widget}));
   }
 
   protected deleteWidget(widgetId: number) {
     this.store.dispatch(removeWidget({widgetId}));
-
   }
 }
