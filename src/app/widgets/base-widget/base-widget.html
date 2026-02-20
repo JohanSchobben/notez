@@ -1,0 +1,13 @@
+<div cdkDrag #widgetElement [cdkDragFreeDragPosition]="widget().position"
+     class="relative inline-block" [cdkDragDisabled]="!isFocused()">
+  @if (isFocused()) {
+    <div #widgetControls class="border absolute left-1/2 -translate-x-1/2 inline py-1 border-gray-300 shadow rounded-full">
+      <button cdkDragHandle class="py-2 px-4 rounded-full">
+        <i class="fa-solid fa-align-justify"></i>
+      </button>
+    </div>
+  }
+  <div (click)="onFocus()">
+    <ng-content />
+  </div>
+</div>

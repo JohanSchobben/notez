@@ -8,7 +8,7 @@ import {Observable} from 'rxjs';
 })
 export class NotezExplorerDatabase {
   private readonly database = inject(Database);
-  public readonly storeName = 'notez';
+  private readonly storeName = 'notez';
 
   public getAllNotez(): Observable<Note[]> {
     return this.database.getData(this.storeName)

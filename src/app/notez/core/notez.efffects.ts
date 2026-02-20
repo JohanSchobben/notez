@@ -1,0 +1,65 @@
+import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {inject} from '@angular/core';
+import {WidgetDatabase} from './widget-database';
+import * as notezActions from './notez.actions';
+import {exhaustMap, map} from 'rxjs';
+
+export const loadWidgetsForNote = createEffect((
+  actions$ = inject(Actions),
+  dbService = inject(WidgetDatabase)
+) => {
+  return actions$
+    .pipe(
+      ofType(notezActions.loadWidgets),
+      exhaustMap(({noteId}) => dbService.getWidgetsForNote(noteId)),
+      map((notez) => notezActions.loadWidgetsSuccess({notez}))
+    )
+}, {functional: true});
+
+export const storeWidget = createEffect((
+  actions$ = inject(Actions),
+  dbService = inject(WidgetDatabase)
+) => {
+  return actions$
+    .pipe(
+      ofType(notezActions.addWidget),
+      exhaustMap(({widget}) => dbService.addWidget(widget)),
+      map((widget) => notezActions.addWidgetSuccess({widget})),
+    )
+}, {functional: true});
+
+export const moveWidget= createEffect((
+  actions$ = inject(Actions),
+  dbService = inject(WidgetDatabase)
+) => {
+  return actions$
+    .pipe(
+      ofType(notezActions.moveWidget),
+      exhaustMap(({widgetId, x, y}) => dbService.updateWidgetPosition(widgetId, x, y)),
+      map((widget) => notezActions.updateWidgetSuccess({widget})),
+    )
+}, {functional: true});
+
+export const putWidget = createEffect((
+  actions$ = inject(Actions),
+  dbService = inject(WidgetDatabase)
+) => {
+  return actions$
+    .pipe(
+      ofType(notezActions.updateWidget),
+      exhaustMap(({widget}) => dbService.updateWidget(widget)),
+      map((widget) => notezActions.updateWidgetSuccess({widget})),
+    )
+}, {functional: true});
+
+export const deleteWidget= createEffect((
+  actions$ = inject(Actions),
+  dbService = inject(WidgetDatabase)
+) => {
+  return actions$
+    .pipe(
+      ofType(notezActions.removeWidget),
+      exhaustMap(({widgetId}) => dbService.deleteWidget(widgetId).pipe(map(() => widgetId))),
+      map((widgetId) => notezActions.removeWidgetSuccess({widgetId})),
+    )
+}, {functional: true});
