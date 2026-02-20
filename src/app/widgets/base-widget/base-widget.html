@@ -1,9 +1,13 @@
 <div cdkDrag #widgetElement [cdkDragFreeDragPosition]="widget().position"
+     (cdkDragEnded)="updatePosition($event)"
      class="relative inline-block" [cdkDragDisabled]="!isFocused()">
   @if (isFocused()) {
-    <div #widgetControls class="border absolute left-1/2 -translate-x-1/2 inline py-1 border-gray-300 shadow rounded-full">
+    <div #widgetControls class="border absolute flex left-1/2 -translate-x-1/2 py-1 border-gray-300 shadow rounded-full">
       <button cdkDragHandle class="py-2 px-4 rounded-full">
         <i class="fa-solid fa-align-justify"></i>
+      </button>
+      <button (click)="deleteWidget()" class="py-2 px-4 rounded-full">
+        <i class="fa-solid fa-trash"></i>
       </button>
     </div>
   }

@@ -6,8 +6,8 @@ import {selectNotezById} from '../../notez-explorer/core/notez-explorer.selector
 import {Note} from '../../shared/models/note';
 import {AsyncPipe, JsonPipe} from '@angular/common';
 import {BaseWidget} from '../../widgets/base-widget/base-widget';
-import {Widget, WidgetType} from '../core/models/widget';
-import {addWidget, loadWidgets} from '../core/notez.actions';
+import {Position, Widget, WidgetType} from '../core/models/widget';
+import {addWidget, loadWidgets, moveWidget, removeWidget} from '../core/notez.actions';
 
 import {getAllWidgetsForNote} from '../core/notez.selector';
 import {loadNotez} from '../../notez-explorer/core/notez-explorer.actions';
@@ -68,5 +68,15 @@ export class NotezView {
       }
     };
     this.store.dispatch(addWidget({widget}));
+  }
+
+  protected updatePosition(widgetId: number, position: Position) {
+    this.store.dispatch(moveWidget({widgetId, ...position}));
+
+  }
+
+  protected deleteWidget(widgetId: number) {
+    this.store.dispatch(removeWidget({widgetId}));
+
   }
 }

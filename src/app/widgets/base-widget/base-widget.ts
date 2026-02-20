@@ -1,10 +1,11 @@
 import {
   ApplicationRef,
-  Component, ElementRef, HostListener, inject, input,
+  Component, ElementRef, HostListener, inject, input, output,
   signal, viewChild,
 } from '@angular/core';
-import {CdkDrag, CdkDragHandle} from '@angular/cdk/drag-drop';
-import {Widget} from '../../notez/core/models/widget';
+import {CdkDrag, CdkDragEnd, CdkDragHandle, CdkDragMove} from '@angular/cdk/drag-drop';
+import {Position, Widget} from '../../notez/core/models/widget';
+import {deleteWidget} from '../../notez/core/notez.efffects';
 
 @Component({
   selector: 'ntz-base-widget',
@@ -23,6 +24,8 @@ export class BaseWidget {
   protected isFocused = signal(false);
 
   public widget = input.required<Widget>()
+  public moved = output<Position>()
+  public removed = output<void>();
 
   @HostListener('window:click', ['$event'])
   onClick(event: MouseEvent): void {
@@ -32,10 +35,15 @@ export class BaseWidget {
     }
   }
 
-  public onFocus(): void {
+  protected onFocus(): void {
     this.isFocused.set(true);
     this.appRef.tick();
     this.showControls();
+  }
+
+  protected updatePosition(event: CdkDragEnd): void {
+    this.moved.emit(event.source.getFreeDragPosition());
+
   }
 
   private showControls(): void {
@@ -54,8 +62,11 @@ export class BaseWidget {
       controlsEl!.style.bottom = 'unset';
     } else {
       controlsEl!.style.bottom = posStyle;
-
       controlsEl!.style.top = 'unset';
     }
+  }
+
+  protected deleteWidget(): void {
+    this.removed.emit();
   }
 }
