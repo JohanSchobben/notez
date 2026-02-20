@@ -54,6 +54,7 @@ export class BaseWidget {
       controlsEl!.style.bottom = 'unset';
     } else {
       controlsEl!.style.bottom = posStyle;
+
       controlsEl!.style.top = 'unset';
     }
   }
