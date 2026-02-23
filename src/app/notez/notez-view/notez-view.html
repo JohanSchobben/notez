@@ -8,21 +8,17 @@
   </div>
 }
 
-<div class="w-full h-full relative">
+<div class="w-full h-full relative widget-field">
 
   @if (widgets) {
-    @for (widget of widgets; track widget.id) {
+    @for (widget of widgets; track `${widget.id}-${widget.position.x}-${widget.position.y}`) {
       <ntz-base-widget
         [widget]="widget"
         (moved)="updatePosition(widget.id!, $event)"
         (removed)="deleteWidget(widget.id!)"
         (movedBackward)="moveBackward(widget)"
         (movedForward)="moveForward(widget)">
-        <div class="size-40  bg-white grid place-items-center border border-gray-600">
-          <pre>
-            <code>{{widget | json }}</code>
-          </pre>
-        </div>
+        <ntz-debug-widget/>
       </ntz-base-widget>
     }
   }

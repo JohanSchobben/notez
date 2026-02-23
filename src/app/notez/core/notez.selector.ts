@@ -15,3 +15,8 @@ export const getNextElevation = createSelector(
       990
     )
 )
+
+export const getStartPosition = createSelector(
+  widgetsSelector,
+  (notezState: NotezState) => notezState.startPosition
+)

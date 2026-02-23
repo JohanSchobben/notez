@@ -67,7 +67,6 @@ export class Database {
   }
 
   public getDataWhere<Name extends StoreNames<SpreadSheetDB>, Idx extends IndexName<Name>>(name: Name, index: Idx, value: IndexValue<Name, Idx>): Observable<StoreValue<SpreadSheetDB,Name>[]> {
-    console.log("getting all", name, index, value)
     return this.database$
       .pipe(
         exhaustMap(db => fromPromise(db.getAllFromIndex(name, index, value as any)))

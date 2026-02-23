@@ -1,5 +1,6 @@
 <div cdkDrag #widgetElement [cdkDragFreeDragPosition]="widget().position"
      (cdkDragEnded)="updatePosition($event)"
+     cdkDragBoundary=".widget-field"
      [style.z-index]="isFocused() ? 1000 : widget().elevation"
      class="relative inline-block" [cdkDragDisabled]="!isFocused()">
   @if (isFocused()) {

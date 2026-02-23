@@ -20,5 +20,5 @@ export const appConfig: ApplicationConfig = {
     }),
     provideEffects(notezExplorerEffects, notezEffects),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })
-]
+  ]
 };
