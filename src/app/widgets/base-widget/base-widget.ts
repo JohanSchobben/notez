@@ -1,13 +1,11 @@
 import {
   AfterViewInit,
   ApplicationRef,
-  Component, contentChild, ElementRef, HostListener, inject, input, output,
+  Component, computed, contentChild, effect, ElementRef, HostListener, inject, input, output,
   signal, viewChild,
 } from '@angular/core';
-import {CdkDrag, CdkDragEnd, CdkDragHandle, CdkDragMove} from '@angular/cdk/drag-drop';
+import {CdkDrag, CdkDragEnd, CdkDragHandle} from '@angular/cdk/drag-drop';
 import {Position, Widget} from '../../notez/core/models/widget';
-import {deleteWidget} from '../../notez/core/notez.efffects';
-import {moveForward} from '../../notez/core/notez.actions';
 import {WidgetComponent} from '../widgetComponent';
 import {WIDGET_ACCESSOR} from '../widget-token';
 
@@ -25,25 +23,45 @@ export class BaseWidget implements AfterViewInit {
   protected controls = viewChild<ElementRef<HTMLDivElement>>("widgetControls");
   protected widgetElement = viewChild<ElementRef<HTMLDivElement>>("widgetElement");
   protected widgetComponent = contentChild.required<WidgetComponent>(WIDGET_ACCESSOR);
-  protected isFocused = signal(false);
+
+
+  protected isWidgetFocused = signal(false);
+  protected isControlsFocused = signal(false);
+  protected isFocused = computed(() => this.isWidgetFocused() || this.isControlsFocused());
+
 
   public widget = input.required<Widget>()
   public moved = output<Position>()
   public removed = output<void>();
   public movedForward = output<void>();
   public movedBackward = output<void>();
+  public metaUpdated = output<any>();
 
-  ngAfterViewInit(): void {
-    this.widgetComponent().focused.subscribe(() => this.onFocus());
-    this.widgetComponent().blurred.subscribe(() => this.isFocused.set(false));
-    this.widgetComponent().setWidget(this.widget());
+  constructor() {
+    effect(() => {
+      this.widgetComponent().setWidget(this.widget());
+    });
   }
 
+  @HostListener('window:click', ['$event'])
+  onWindowClick(event: MouseEvent): void {
+    const controlsClicked = this.controls()?.nativeElement.contains(event.target as HTMLElement);
+    this.isControlsFocused.set(controlsClicked ?? false);
+  }
 
-  protected onFocus(): void {
-    this.isFocused.set(true);
-    this.appRef.tick();
-    this.showControls();
+  ngAfterViewInit(): void {
+    this.widgetComponent().stateChanged$.subscribe(() => {
+      const widgetHasFocus = this.widgetComponent().hasFocus;
+      this.isWidgetFocused.set(widgetHasFocus);
+      if (widgetHasFocus) {
+        this.appRef.tick();
+        this.showControls();
+      }
+    });
+    this.widgetComponent().metaUpdated$.subscribe(meta => {
+      this.metaUpdated.emit(meta);
+    });
+    this.widgetComponent().setWidget(this.widget());
   }
 
   protected updatePosition(event: CdkDragEnd): void {

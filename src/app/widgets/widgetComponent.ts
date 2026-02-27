@@ -1,8 +1,9 @@
-import {OutputEmitterRef} from '@angular/core';
 import {Widget} from '../notez/core/models/widget';
+import {Observable} from 'rxjs';
 
 export interface WidgetComponent {
-  focused: OutputEmitterRef<void>;
-  blurred: OutputEmitterRef<void>;
+  readonly stateChanged$: Observable<void>;
+  readonly metaUpdated$: Observable<any>;
+  readonly hasFocus: boolean;
   setWidget(widget: Widget): void;
 }

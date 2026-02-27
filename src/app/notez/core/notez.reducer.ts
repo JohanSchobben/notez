@@ -1,7 +1,6 @@
 import {createReducer, on} from '@ngrx/store';
 import {Widget} from './models/widget';
 import * as NotezActions from './notez.actions';
-import {addWidget} from './notez.actions';
 
 
 export interface NotezState {
@@ -12,8 +11,8 @@ export interface NotezState {
 const initialState: NotezState = {
   widgets: [],
   startPosition: {
-    x: 100,
-    y: 100,
+    x: 200,
+    y: 200,
   }
 }
 
@@ -24,4 +23,5 @@ export const notezReducer = createReducer(
   on(NotezActions.addWidgetSuccess, (state, {widget}) => ({...state, widgets: [...state.widgets, widget]})),
   on(NotezActions.updateWidgetSuccess, (state, {widget}) => ({...state, widgets: state.widgets.map(w => w.id === widget.id ? structuredClone(widget) : w)})),
   on(NotezActions.removeWidgetSuccess, (state, {widgetId}) => ({...state, widgets: state.widgets.filter(w => w.id !== widgetId)})),
+  on(NotezActions.moveWidgetSuccess, (state, {widgetId, x, y}) => ({...state, widgets: state.widgets.map(w => w.id === widgetId ? {...w, position: {x, y}} : w)}))
 );

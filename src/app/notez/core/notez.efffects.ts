@@ -39,6 +39,18 @@ export const moveWidget= createEffect((
     .pipe(
       ofType(notezActions.moveWidget),
       exhaustMap(({widgetId, x, y}) => dbService.updateWidgetPosition(widgetId, x, y)),
+      map((widget) => notezActions.moveWidgetSuccess({widgetId: widget.id!, y: widget.position.y, x: widget.position.x})),
+    )
+}, {functional: true});
+
+export const updateMeta= createEffect((
+  actions$ = inject(Actions),
+  dbService = inject(WidgetDatabase)
+) => {
+  return actions$
+    .pipe(
+      ofType(notezActions.updateMeta),
+      exhaustMap(({widgetId, meta}) => dbService.updateMeta(widgetId, meta)),
       map((widget) => notezActions.updateWidgetSuccess({widget})),
     )
 }, {functional: true});

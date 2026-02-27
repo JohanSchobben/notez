@@ -13,3 +13,7 @@ export const removeWidget = createAction('[Notez] Remove Widget', props<{widgetI
 export const removeWidgetSuccess = createAction('[Notez] Remove Widget Success', props<{widgetId: number}>());
 export const moveBack = createAction('[Notez] Move Back', props<{widget: Widget}>());
 export const moveForward = createAction('[Notez] Move Forward', props<{widget: Widget}>());
+
+
+export const moveWidgetSuccess = createAction('[Notez] Move Widget Success', props<{widgetId: number, x: number, y: number}>());
+export const updateMeta = createAction('[Notez] Update Meta', props<{widgetId: number, meta: any}>());

@@ -7,19 +7,21 @@ import {Note} from '../../shared/models/note';
 import {AsyncPipe } from '@angular/common';
 import {BaseWidget} from '../../widgets/base-widget/base-widget';
 import {Position, Widget, WidgetType} from '../core/models/widget';
-import {addWidget, loadWidgets, moveBack, moveForward, moveWidget, removeWidget} from '../core/notez.actions';
+import {addWidget, loadWidgets, moveBack, moveForward, moveWidget, removeWidget, updateMeta} from '../core/notez.actions';
 
 import {getAllWidgetsForNote, getNextElevation, getStartPosition} from '../core/notez.selector';
 import {loadNotez} from '../../notez-explorer/core/notez-explorer.actions';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {DebugWidget} from '../../widgets/debug-widget/debug-widget';
+import {SimpleText} from '../../widgets/simple-text/simple-text';
 
 @Component({
   selector: 'ntz-notez-view',
   imports: [
     AsyncPipe,
     BaseWidget,
-    DebugWidget
+    DebugWidget,
+    SimpleText
   ],
   templateUrl: './notez-view.html',
   styleUrl: './notez-view.scss',
@@ -72,15 +74,14 @@ export class NotezView {
         take(1),
       ).subscribe(position => {
       const widget: Widget = {
-        meta: undefined,
+        meta: type === "debug" ? undefined : "Hello World!",
         noteId: +this.route.snapshot.params['id'],
         type: type,
         elevation: this.nextElevation,
         position: position
       };
       this.store.dispatch(addWidget({widget}));
-
-    })
+    });
   }
 
   protected updatePosition(widgetId: number, position: Position) {
@@ -97,5 +98,9 @@ export class NotezView {
 
   protected deleteWidget(widgetId: number) {
     this.store.dispatch(removeWidget({widgetId}));
+  }
+
+  protected updateMeta(widgetId: number, meta: any): void {
+    this.store.dispatch(updateMeta({widgetId, meta}));
   }
 }
