@@ -20,8 +20,6 @@ import {SimpleText} from '../../widgets/simple-text/simple-text';
   imports: [
     AsyncPipe,
     BaseWidget,
-    DebugWidget,
-    SimpleText
   ],
   templateUrl: './notez-view.html',
   styleUrl: './notez-view.scss',

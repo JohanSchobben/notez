@@ -1,9 +1,8 @@
-import {Component, ElementRef, HostListener, inject, output, signal} from '@angular/core';
+import {Component, ElementRef, HostListener, inject, input, OnDestroy, OnInit, output, signal} from '@angular/core';
 import {WidgetComponent} from '../widgetComponent';
 import {WIDGET_ACCESSOR} from '../widget-token';
 import {Widget} from '../../notez/core/models/widget';
 import {JsonPipe} from '@angular/common';
-import {Observable, Subject} from 'rxjs';
 
 @Component({
   selector: 'ntz-debug-widget',
@@ -19,19 +18,25 @@ import {Observable, Subject} from 'rxjs';
     }
   ]
 })
-export class DebugWidget implements WidgetComponent {
-  protected stateChanges = new Subject<void>();
-  protected metaUpdated = new Subject<any>();
+export class DebugWidget implements WidgetComponent, OnInit, OnDestroy {
+  public stateChanged = output<void>();
+  public metaUpdated = output<any>();
   protected _hasFocus = false;
   protected elementRef = inject(ElementRef);
-  protected widget = signal<Widget | undefined>(undefined);
+  public readonly widget = input.required<Widget>();
+  private static counter= 0;
+  private count = ++DebugWidget.counter;
 
-  public get stateChanged$(): Observable<void> {
-    return this.stateChanges.asObservable();
+  constructor() {
+    console.log("DebugWidget constructor called", this.count,);
   }
 
-  public get metaUpdated$(): Observable<any> {
-    return this.metaUpdated.asObservable();
+  public ngOnInit(): void {
+    console.log("DebugWidget ngOnInit called",  this.count);
+  }
+
+  public ngOnDestroy(): void {
+    console.log("DebugWidget ngOnDestroy called", this.count);
   }
 
   public get hasFocus(): boolean {
@@ -42,11 +47,7 @@ export class DebugWidget implements WidgetComponent {
   onClick(event: MouseEvent): void {
     const target = event.target as HTMLElement;
     this._hasFocus = this.elementRef.nativeElement.contains(target);
-    console.log(this._hasFocus)
-    this.stateChanges.next();
-  }
-
-  setWidget(widget:Widget): void {
-    this.widget.set(widget);
+    console.log("DebugWidget onClick HostListener", this.count, this._hasFocus)
+    this.stateChanged.emit();
   }
 }

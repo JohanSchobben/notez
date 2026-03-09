@@ -1,5 +1,5 @@
 
-export type WidgetType = 'debug' | 'simple-text';
+export type WidgetType = 'debug' | 'simple-text' | 'todo';
 
 export type Position = {
   x: number;

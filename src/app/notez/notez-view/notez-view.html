@@ -20,14 +20,6 @@
         (movedBackward)="moveBackward(widget)"
         (metaUpdated)="updateMeta(widget.id!, $event)"
         (movedForward)="moveForward(widget)">
-        @switch (widget.type) {
-          @case ('simple-text') {
-            <ntz-simple-text />
-          }
-          @case ('debug') {
-            <ntz-debug-widget />
-          }
-        }
       </ntz-base-widget>
     }
   }
