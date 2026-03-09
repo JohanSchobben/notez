@@ -1,5 +1,5 @@
 // src/app/widgets/todo-widget/todo-widget.ts
-import {Component, ElementRef, HostListener, inject, input, output, signal} from '@angular/core';
+import {Component, effect, ElementRef, HostListener, inject, input, output, signal} from '@angular/core';
 import { WidgetComponent } from '../widgetComponent';
 import { Widget } from '../../notez/core/models/widget';
 import { WIDGET_ACCESSOR } from '../widget-token';
@@ -33,6 +33,13 @@ export class TodoWidget implements WidgetComponent {
   public readonly metaUpdated = output<any>();
   public readonly widget = input.required<Widget>();
 
+  constructor() {
+    effect(() => {
+      this.todos.set(this.widget().meta as TodoItem[] ?? []);
+    });
+  }
+
+
   get hasFocus(): boolean {
     return this._hasFocus;
   }
@@ -55,7 +62,7 @@ export class TodoWidget implements WidgetComponent {
 
   toggleComplete(index: number): void {
     const newTodos = [...this.todos()];
-    newTodos[index].completed = !newTodos[index].completed;
+    newTodos[index] = { ...newTodos[index], completed: !newTodos[index].completed };
     this.todos.set(newTodos);
     this.updateMeta(newTodos);
   }

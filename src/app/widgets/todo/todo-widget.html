@@ -1,6 +1,4 @@
 <div class="todo-widget bg-white border border-gray-300 p-4 rounded shadow">
-  <h3 class="text-lg font-bold mb-2">TODO List</h3>
-
   <ul class="list-disc pl-5 mb-4">
     @for (todo of todos(); track $index) {
       <li class="flex items-center justify-between mb-2">
@@ -11,12 +9,12 @@
         <button (click)="removeTodo($index)" class="text-red-500 ml-2">Remove</button>
       </li>
     } @empty {
-      <li>No todos yet!</li>
+      <li class="list-none">No todos yet!</li>
     }
   </ul>
 
   <div class="flex">
-    <input [(ngModel)]="newTodoText" type="text" placeholder="Add new todo" class="border p-2 flex-grow mr-2" />
+    <input [(ngModel)]="newTodoText" (keydown.enter)="addTodo()" type="text" placeholder="Add new todo" class="border p-2 flex-grow mr-2" />
     <button (click)="addTodo()" class="bg-blue-500 text-white py-2 px-4 rounded">Add</button>
   </div>
 </div>
