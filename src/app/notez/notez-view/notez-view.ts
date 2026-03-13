@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, HostListener, inject, signal} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {filter, Observable, switchMap, take, tap} from 'rxjs';
@@ -8,12 +8,9 @@ import {AsyncPipe } from '@angular/common';
 import {BaseWidget} from '../../widgets/base-widget/base-widget';
 import {Position, Widget, WidgetType} from '../core/models/widget';
 import {addWidget, loadWidgets, moveBack, moveForward, moveWidget, removeWidget, updateMeta} from '../core/notez.actions';
-
 import {getAllWidgetsForNote, getNextElevation, getStartPosition} from '../core/notez.selector';
 import {loadNotez} from '../../notez-explorer/core/notez-explorer.actions';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {DebugWidget} from '../../widgets/debug-widget/debug-widget';
-import {SimpleText} from '../../widgets/simple-text/simple-text';
 
 @Component({
   selector: 'ntz-notez-view',
@@ -32,6 +29,7 @@ export class NotezView {
   protected note$: Observable<Note>;
   protected widgets$: Observable<Widget[]>
   protected startPosition$: Observable<{ x: number; y: number }>;
+  protected showDropZone = signal(false);
 
   constructor() {
     this.store.dispatch(loadNotez());
@@ -64,6 +62,69 @@ export class NotezView {
       .pipe(
         takeUntilDestroyed()
       ).subscribe(elevation => this.nextElevation = elevation);
+  }
+
+  @HostListener('window:drop', ['$event'])
+  public insertFile(event: DragEvent) {
+    console.log("drop", event);
+    const files = [ ...event.dataTransfer!.items].filter(file => file.kind === 'file');
+    if (files.length === 0) return;
+    event.preventDefault();
+    this.showDropZone.set(false);
+    for (const file of files.filter(file => file.type.startsWith('image/'))) {
+      const fileObj = file.getAsFile()
+      if (!fileObj) continue;
+      createImageBitmap(fileObj).then(bitmap => {
+        const imageWidth = Math.min(bitmap.width, 400);
+        const imageHeight = bitmap.height / (bitmap.width / imageWidth);
+
+        const widget: Widget = {
+          type: "image",
+          meta: {
+            file: {
+              name: fileObj.name,
+              type: fileObj.type,
+              size: fileObj.size,
+              lastModified: fileObj.lastModified,
+              webkitRelativePath: fileObj.webkitRelativePath,
+              url: URL.createObjectURL(fileObj),
+            },
+            rotation: 0,
+            size: {
+              width: imageWidth,
+              height: imageHeight,
+            }
+          },
+          elevation: this.nextElevation,
+          noteId: +this.route.snapshot.params['id'],
+          position: {
+            x: event.pageX - imageWidth / 2,
+            y: event.pageY -  imageHeight / 2,
+          }
+        }
+        this.store.dispatch(addWidget({widget}))
+      })
+
+    }
+
+  }
+
+  @HostListener('window:dragover', ['$event'])
+  public fileHover(event: DragEvent) {
+    const files = [ ...event.dataTransfer!.items].filter(file => file.kind === 'file');
+    if (files.length === 0) return;
+    event.preventDefault();
+    this.showDropZone.set(true);
+    if (files.some(file => file.type.startsWith('image/'))) {
+      event.dataTransfer!.dropEffect = 'copy';
+    } else {
+      event.dataTransfer!.dropEffect = 'none';
+    }
+  }
+
+  @HostListener('window:dragleave', ['$event'])
+  public fileLeave(event: DragEvent) {
+    this.showDropZone.set(false);
   }
 
   protected addWidget(type: WidgetType = "debug") {

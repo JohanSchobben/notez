@@ -1,12 +1,24 @@
-import {Component, ElementRef, HostListener, inject, input, output, OutputEmitterRef, signal} from '@angular/core';
+import {
+  Component,
+  effect,
+  ElementRef,
+  HostListener,
+  inject,
+  input,
+  output,
+  OutputEmitterRef,
+  signal
+} from '@angular/core';
 import {WidgetComponent} from '../widgetComponent';
 import {Widget} from "../../notez/core/models/widget";
 import {WIDGET_ACCESSOR} from '../widget-token';
-import {Observable, Subject} from 'rxjs';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'ntz-simple-text',
-  imports: [],
+  imports: [
+    FormsModule
+  ],
   templateUrl: './simple-text.html',
   styleUrl: './simple-text.scss',
   providers: [
@@ -16,9 +28,16 @@ import {Observable, Subject} from 'rxjs';
 export class SimpleText implements WidgetComponent {
   private elementRef = inject(ElementRef);
   protected _hasFocus = false;
+  protected text = signal<string>('');
   public readonly stateChanged = output<void>();
   public readonly metaUpdated = output<any>();
   public readonly widget = input.required<Widget>();
+
+  constructor() {
+    effect(() => {
+      this.text.set(this.widget().meta as string ?? "");
+    });
+  }
 
   @HostListener('window:click', ['$event'])
   onClick(event: MouseEvent): void {
@@ -31,7 +50,11 @@ export class SimpleText implements WidgetComponent {
     return this._hasFocus;
   }
 
-  protected changeText() {
-    this.metaUpdated.emit("Text changed");
+  protected onTextChange(value: string) {
+    this.metaUpdated.emit(value);
+  }
+
+  protected changeState() {
+    this.stateChanged.emit();
   }
 }

@@ -1,2 +1,7 @@
-<button class="mt-4 bg-red-400 py-2 px-4" (click)="changeText()">Change</button>
-<p>{{widget().meta}}</p>
+<textarea
+  class="min-h-32 w-full rounded border border-gray-300 p-3"
+  [ngModel]="text()"
+  (ngModelChange)="onTextChange($event)"
+  (focus)="changeState()"
+  (blur)="changeState()"
+  placeholder="Voer hier tekst in"></textarea>

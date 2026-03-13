@@ -1,0 +1,4 @@
+<img [src]="imageSrc()" [width]="width()" [height]="height()" [alt]="widget().meta.file.name" #imageElement>
+@if (inFocus()){
+  <ntz-resize-handle (resize)="updateImageSize($event)" (resizeEnd)="storeNewSize($event)"/>
+}
