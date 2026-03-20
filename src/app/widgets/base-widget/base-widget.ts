@@ -4,7 +4,7 @@ import {
   input, inputBinding, output, outputBinding, Signal,
   signal, TemplateRef, Type, viewChild,
 } from '@angular/core';
-import {CdkDrag, CdkDragEnd, CdkDragHandle} from '@angular/cdk/drag-drop';
+import {CdkDrag, CdkDragEnd, CdkDragHandle, CdkDragMove} from '@angular/cdk/drag-drop';
 import {Position, Widget, WidgetType} from '../../notez/core/models/widget';
 import {WidgetComponent} from '../widgetComponent';
 import {WIDGET_MAP, WIDGET_MAP_ACCESSOR} from '../widget-map';
@@ -19,6 +19,11 @@ import {takeUntilDestroyed, toObservable} from '@angular/core/rxjs-interop';
   ],
   templateUrl: './base-widget.html',
   styleUrl: './base-widget.scss',
+  host: {
+    '[style.width.px]': 'widget().size.width',
+    '[style.height.px]': 'widget().size.height',
+    '[style.display]': '"block"'
+  },
   providers: [
     { provide: WIDGET_MAP_ACCESSOR, useValue: WIDGET_MAP }
   ]
@@ -50,12 +55,13 @@ export class BaseWidget implements AfterViewInit {
     };
   });
 
-  public widget = input.required<Widget>()
-  public moved = output<Position>()
-  public removed = output<void>();
-  public movedForward = output<void>();
-  public movedBackward = output<void>();
-  public metaUpdated = output<any>();
+  public readonly widget = input.required<Widget>()
+  public readonly moved = output<Position>()
+  public readonly removed = output<void>();
+  public readonly movedForward = output<void>();
+  public readonly movedBackward = output<void>();
+  public readonly metaUpdated = output<any>();
+  public readonly moving = output<any>();
 
   @HostListener('window:click', ['$event'])
   public onWindowClick(event: MouseEvent): void {
@@ -111,5 +117,10 @@ export class BaseWidget implements AfterViewInit {
 
   protected deleteWidget(): void {
     this.removed.emit();
+  }
+
+  protected emitCurrentPosition(event: CdkDragMove<any>) {
+    const position = event.source.getFreeDragPosition();
+    this.moving.emit({right: position.x + this.widget().size.width, bottom: position.y + this.widget().size.height});
   }
 }

@@ -6,11 +6,17 @@ export type Position = {
   y: number;
 }
 
-export type Widget = {
+export type Size = {
+  width: number;
+  height: number;
+}
+
+export type Widget<T = any> = {
   id?: number;
   position: Position;
+  size: Size;
   elevation: number;
   type: WidgetType;
-  meta: any;
+  meta: T;
   noteId: number;
 }

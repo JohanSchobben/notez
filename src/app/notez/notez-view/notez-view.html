@@ -10,12 +10,13 @@
   </div>
 }
 
-<div class="w-full h-full relative widget-field">
+<div [style.width.px]="activeBoardWidth()" [style.height.px]="activeBoardHeight()" class="min-w-full min-h-full relative widget-field" #board>
   @if (widgets) {
     @for (widget of widgets; track widget.id) {
       <ntz-base-widget
         [widget]="widget"
         (moved)="updatePosition(widget.id!, $event)"
+        (moving)="checkExpanding($event)"
         (removed)="deleteWidget(widget.id!)"
         (movedBackward)="moveBackward(widget)"
         (metaUpdated)="updateMeta(widget.id!, $event)"

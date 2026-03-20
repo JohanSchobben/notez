@@ -1,16 +1,18 @@
-import {Component, HostListener, inject, signal} from '@angular/core';
+import {Component, computed, ElementRef, HostListener, inject, Signal, signal, viewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
-import {filter, Observable, switchMap, take, tap} from 'rxjs';
+import {filter, map, Observable, Subject, switchMap, take, tap, throttleTime, withLatestFrom} from 'rxjs';
 import {selectNotezById} from '../../notez-explorer/core/notez-explorer.selectors';
 import {Note} from '../../shared/models/note';
 import {AsyncPipe } from '@angular/common';
 import {BaseWidget} from '../../widgets/base-widget/base-widget';
 import {Position, Widget, WidgetType} from '../core/models/widget';
 import {addWidget, loadWidgets, moveBack, moveForward, moveWidget, removeWidget, updateMeta} from '../core/notez.actions';
-import {getAllWidgetsForNote, getNextElevation, getStartPosition} from '../core/notez.selector';
+import {getAllWidgetsForNote, getContainerHeight, getContainerWidth, getNextElevation, getStartPosition} from '../core/notez.selector';
 import {loadNotez} from '../../notez-explorer/core/notez-explorer.actions';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {WIDGET_DEFAULTS, WIDGET_DEFAULTS_ACCESSOR} from '../../widgets/widget-defaults';
+import {windowResize$} from '../core/helpers/screensize';
 
 @Component({
   selector: 'ntz-notez-view',
@@ -20,16 +22,28 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
   ],
   templateUrl: './notez-view.html',
   styleUrl: './notez-view.scss',
+  providers: [
+    { provide: WIDGET_DEFAULTS_ACCESSOR, useValue: WIDGET_DEFAULTS }
+  ]
 })
 export class NotezView {
   private readonly route = inject(ActivatedRoute);
   private readonly store = inject(Store);
+  private readonly widgetDefaults = inject(WIDGET_DEFAULTS_ACCESSOR);
+  private readonly widgetBoard = viewChild.required<ElementRef<HTMLDivElement>>("board");
+  private readonly widgetMovingPosition = new Subject<{right: number; bottom: number}>()
   private nextElevation = 0;
 
-  protected note$: Observable<Note>;
-  protected widgets$: Observable<Widget[]>
-  protected startPosition$: Observable<{ x: number; y: number }>;
-  protected showDropZone = signal(false);
+  protected readonly note$: Observable<Note>;
+  protected readonly widgets$: Observable<Widget[]>
+  protected readonly boardWidth: Signal<number>;
+  protected readonly boardHeight: Signal<number>;
+  protected readonly dragWidth = signal(0);
+  protected readonly dragHeight = signal(0);
+  protected readonly startPosition$: Observable<{ x: number; y: number }>;
+  protected readonly showDropZone = signal(false);
+  protected readonly activeBoardWidth = computed(() => this.boardWidth() + this.dragWidth());
+  protected readonly activeBoardHeight = computed(() => this.boardHeight() + this.dragHeight());
 
   constructor() {
     this.store.dispatch(loadNotez());
@@ -39,7 +53,7 @@ export class NotezView {
         takeUntilDestroyed()
       ).subscribe(params => {
         this.store.dispatch(loadWidgets({noteId: +params['id']}));
-    })
+    });
 
     this.note$ = this.route.params
       .pipe(
@@ -62,6 +76,36 @@ export class NotezView {
       .pipe(
         takeUntilDestroyed()
       ).subscribe(elevation => this.nextElevation = elevation);
+
+    this.boardHeight = this.store.selectSignal(getContainerHeight);
+    this.boardWidth = this.store.selectSignal(getContainerWidth);
+
+    this.widgetMovingPosition
+      .pipe(
+        takeUntilDestroyed(),
+        throttleTime(16),
+        map(({right, bottom}) => {
+          const edgeThreshold = 40;
+          const {width, height} = this.widgetBoard().nativeElement.getBoundingClientRect();
+
+          const horizontalResize = width - edgeThreshold < right;
+          const verticalResize = height - edgeThreshold < bottom;
+          return {horizontalResize, verticalResize}
+        }),
+        filter(({horizontalResize, verticalResize}) => horizontalResize || verticalResize),
+      ).subscribe(({horizontalResize, verticalResize}) => {
+        console.log("drag", horizontalResize, verticalResize);
+        const board  = this.widgetBoard().nativeElement;
+        if (horizontalResize) {
+          this.dragWidth.set(this.dragWidth() + 20);
+          document.documentElement.scrollLeft += 20;
+        }
+
+        if (verticalResize) {
+          this.dragHeight.set(this.dragHeight() + 20);
+          document.documentElement.scrollTop += 20;
+        }
+    })
   }
 
   @HostListener('window:drop', ['$event'])
@@ -80,6 +124,10 @@ export class NotezView {
 
         const widget: Widget = {
           type: "image",
+          size: {
+            width: imageWidth,
+            height: imageHeight,
+          },
           meta: {
             file: {
               name: fileObj.name,
@@ -90,10 +138,6 @@ export class NotezView {
               url: URL.createObjectURL(fileObj),
             },
             rotation: 0,
-            size: {
-              width: imageWidth,
-              height: imageHeight,
-            }
           },
           elevation: this.nextElevation,
           noteId: +this.route.snapshot.params['id'],
@@ -122,8 +166,8 @@ export class NotezView {
     }
   }
 
-  @HostListener('window:dragleave', ['$event'])
-  public fileLeave(event: DragEvent) {
+  @HostListener('window:dragleave')
+  public fileLeave() {
     this.showDropZone.set(false);
   }
 
@@ -133,12 +177,13 @@ export class NotezView {
         take(1),
       ).subscribe(position => {
       const widget: Widget = {
+        ...this.widgetDefaults[type],
         meta: type === "debug" ? undefined : "Hello World!",
         noteId: +this.route.snapshot.params['id'],
         type: type,
         elevation: this.nextElevation,
         position: position
-      };
+      } as Widget;
       this.store.dispatch(addWidget({widget}));
     });
   }
@@ -161,5 +206,9 @@ export class NotezView {
 
   protected updateMeta(widgetId: number, meta: any): void {
     this.store.dispatch(updateMeta({widgetId, meta}));
+  }
+
+  protected checkExpanding(event: {right: number; bottom: number;}) {
+    this.widgetMovingPosition.next(event);
   }
 }

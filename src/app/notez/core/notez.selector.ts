@@ -20,3 +20,14 @@ export const getStartPosition = createSelector(
   widgetsSelector,
   (notezState: NotezState) => notezState.startPosition
 )
+
+
+export const getContainerWidth = createSelector(
+  widgetsSelector,
+  (notezState: NotezState) => Math.max(...notezState.widgets.map(w => w.position.x + w.size.width)) + 10
+);
+
+export const getContainerHeight = createSelector(
+  widgetsSelector,
+  (notezState: NotezState) => Math.max(...notezState.widgets.map(w => w.position.y + w.size.height)) + 10
+)

@@ -1,5 +1,6 @@
 <div cdkDrag #widgetElement [cdkDragFreeDragPosition]="widget().position"
      (cdkDragEnded)="updatePosition($event)"
+     (cdkDragMoved)="emitCurrentPosition($event)"
      cdkDragBoundary=".widget-field"
      [style.z-index]="isFocused() ? 1000 : widget().elevation"
      class="relative inline-block" [cdkDragDisabled]="!isFocused()">
@@ -19,5 +20,5 @@
       </button>
     </div>
   }
-  <div #widgetHost></div>
+  <div #widgetHost [style.width.px]="widget().size.width" [style.height.px]="widget().size.height"></div>
 </div>
