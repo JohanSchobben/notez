@@ -19,8 +19,7 @@ const initialState: NotezState = {
 export const notezReducer = createReducer(
   initialState,
   on(NotezActions.loadWidgetsSuccess, (state, {notez}) => ({...state, widgets: notez})),
-  on(NotezActions.addWidget, (state) => ({...state, startPosition: {x: state.startPosition.x + 50, y: state.startPosition.y + 50}})),
-  on(NotezActions.addWidgetSuccess, (state, {widget}) => ({...state, widgets: [...state.widgets, widget]})),
+  on(NotezActions.addWidgetSuccess, (state, {widget}) => ({...state, widgets: [...state.widgets, widget], startPosition: {x: state.startPosition.x + 50, y: state.startPosition.y + 50}})),
   on(NotezActions.updateWidgetSuccess, (state, {widget}) => ({...state, widgets: state.widgets.map(w => w.id === widget.id ? structuredClone(widget) : w)})),
   on(NotezActions.removeWidgetSuccess, (state, {widgetId}) => ({...state, widgets: state.widgets.filter(w => w.id !== widgetId)})),
   on(NotezActions.moveWidgetSuccess, (state, {widgetId, x, y}) => ({...state, widgets: state.widgets.map(w => w.id === widgetId ? {...w, position: {x, y}} : w)}))

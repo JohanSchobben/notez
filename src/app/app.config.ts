@@ -6,19 +6,23 @@ import { provideStore } from '@ngrx/store';
 import {notezExplorerReducer} from './notez-explorer/core/notez-explorer.reducer';
 import * as notezExplorerEffects from './notez-explorer/core/notez-explorer.effects';
 import * as notezEffects from './notez/core/notez.efffects';
+import * as undoRedoEffects from './notez/undo-redo/undo-redo.effects';
 import { provideEffects } from '@ngrx/effects';
 import {notezReducer} from './notez/core/notez.reducer';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import {undoRedoReducer} from './notez/undo-redo/undo-redo.reducer';
+import {AppState} from '../store/app-state';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideStore({
+    provideStore<AppState>({
         notezExplorer: notezExplorerReducer,
-        widgets: notezReducer
+        widgets: notezReducer,
+        undoRedo: undoRedoReducer
     }),
-    provideEffects(notezExplorerEffects, notezEffects),
+    provideEffects(notezExplorerEffects, notezEffects, undoRedoEffects),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })
   ]
 };

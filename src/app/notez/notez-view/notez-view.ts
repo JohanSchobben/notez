@@ -8,11 +8,12 @@ import {AsyncPipe } from '@angular/common';
 import {BaseWidget} from '../../widgets/base-widget/base-widget';
 import {Position, Widget, WidgetType} from '../core/models/widget';
 import {addWidget, loadWidgets, moveBack, moveForward, moveWidget, removeWidget, updateMeta} from '../core/notez.actions';
-import {getAllWidgetsForNote, getContainerHeight, getContainerWidth, getNextElevation, getStartPosition} from '../core/notez.selector';
+import {getContainerHeight, getContainerWidth, getNextElevation, getStartPosition} from '../core/notez.selector';
 import {loadNotez} from '../../notez-explorer/core/notez-explorer.actions';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {WIDGET_DEFAULTS, WIDGET_DEFAULTS_ACCESSOR} from '../../widgets/widget-defaults';
-import {windowResize$} from '../core/helpers/screensize';
+import {canRedo, canUndo, getCurrentWidgets} from '../undo-redo/undo-redo.selector';
+import {undo, redo} from '../undo-redo/undo-redo.actions';
 
 @Component({
   selector: 'ntz-notez-view',
@@ -36,6 +37,8 @@ export class NotezView {
 
   protected readonly note$: Observable<Note>;
   protected readonly widgets$: Observable<Widget[]>
+  protected readonly canUndo$: Observable<boolean>;
+  protected readonly canRedo$: Observable<boolean>;
   protected readonly boardWidth: Signal<number>;
   protected readonly boardHeight: Signal<number>;
   protected readonly dragWidth = signal(0);
@@ -57,21 +60,20 @@ export class NotezView {
 
     this.note$ = this.route.params
       .pipe(
-        switchMap(params => {
-          return this.store.select(selectNotezById(params['id']));
-        }),
+        takeUntilDestroyed(),
+        switchMap(params => this.store.select(selectNotezById(params['id']))),
         filter(Boolean)
       );
 
+
+
     this.startPosition$ = this.store.select(getStartPosition);
 
-    this.widgets$ = this.route.params
-      .pipe(
-        switchMap(params => {
-          return this.store.select(getAllWidgetsForNote(params['id']))
-        }),
-        tap(widgets => console.log(widgets))
-      );
+    this.canUndo$ = this.store.select(canUndo);
+    this.canRedo$ = this.store.select(canRedo);
+
+    this.widgets$ = this.store.select(getCurrentWidgets).pipe(map(widgets => widgets ?? []));
+
     this.store.select(getNextElevation)
       .pipe(
         takeUntilDestroyed()
@@ -106,6 +108,13 @@ export class NotezView {
           document.documentElement.scrollTop += 20;
         }
     })
+  }
+
+  @HostListener("window:keydown", ["$event"])
+  public onKeyDown(event: KeyboardEvent) {
+    if (event.key === "d") {
+      console.log(this.store.selectSignal(t => t)());
+    }
   }
 
   @HostListener('window:drop', ['$event'])
@@ -210,5 +219,13 @@ export class NotezView {
 
   protected checkExpanding(event: {right: number; bottom: number;}) {
     this.widgetMovingPosition.next(event);
+  }
+
+  protected undo(): void {
+    this.store.dispatch(undo());
+  }
+
+  protected redo(): void {
+    this.store.dispatch(redo());
   }
 }
