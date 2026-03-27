@@ -33,8 +33,8 @@ export const saveEffect = createEffect((
 ) => {
   return actions$.pipe(
     ofType(createNote),
-    exhaustMap(({title}) => {
-      const note: Note = {title, lastOpenedAt: new Date(), createdAt: new Date()};
+    exhaustMap(({title, description, tags}) => {
+      const note: Note = {title, description, tags, archived: false, lastOpenedAt: new Date(), createdAt: new Date()};
       return dbService.saveNote(note);
     }),
     map((note: Note) => {

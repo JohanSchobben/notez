@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {Database} from '../../shared/database/database';
-import {exhaustMap, Observable, throwError} from 'rxjs';
+import {exhaustMap, map, Observable, throwError} from 'rxjs';
 import {Widget} from './models/widget';
 
 @Injectable({
@@ -61,6 +61,17 @@ export class WidgetDatabase {
 
   public updateWidget(widget: Widget): Observable<Widget> {
     return this.database.update(this.storeName, widget);
+  }
+
+  public getWidgetAmountsPerNote(): Observable<Record<number, number>> {
+    return this.database.getData(this.storeName)
+      .pipe(
+        map((widgets: Widget[]) => widgets.reduce((acc: Record<number, number>, widget: Widget) => {
+          acc[widget.noteId] ??= 0;
+          acc[widget.noteId]++;
+          return acc;
+        }, {} as Record<number, number>))
+      )
   }
 
 }
