@@ -1,59 +1,102 @@
 # Notez
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.2.
+Notez is an Angular-based note board app for creating and managing visual note spaces. It uses Angular 21, NgRx, and IndexedDB-friendly persistence tools to organize notes and widgets on a board-style interface.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- Create, open, and delete notes
+- Place widgets on a note board
+- Supported widget types:
+  - debug
+  - simple text
+  - todo
+  - image
+- Drag-and-drop image adding
+- Undo / redo support
+- State management with NgRx
+- Responsive UI styling with Tailwind CSS and SCSS
+
+## Tech Stack
+
+- Angular 21
+- TypeScript 5.9
+- NgRx Store / Effects / DevTools
+- RxJS
+- IDB
+- Tailwind CSS
+
+## Prerequisites
+
+- Node.js 20+ recommended
+- npm 10+
+
+## Getting Started
+
+Install dependencies:
 
 ```bash
-ng serve
+npm install
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Run the development server:
 
 ```bash
-ng generate component component-name
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Then open:
 
-```bash
-ng generate --help
+```text
+http://localhost:4200
 ```
+
+## Available Scripts
+
+- `npm start` — start the dev server
+- `npm run build` — build the app
+- `npm run watch` — build in watch mode for development
+- `npm test` — run tests
+
+## Project Structure
+
+```text
+src/
+app/
+home-page/         # Notes list and note creation UI
+notez/             # Board view, widgets, undo/redo logic
+notez-explorer/    # Note list state and actions
+shared/            # Shared models, helpers, and utilities
+widgets/           # Widget components and defaults
+store/             # App-wide state definitions
+```
+
+## Routing
+
+- `/` — home page with the note list
+- `/note/:id` — note board view
+
+## Development Notes
+
+- The app uses NgRx for state flow and actions.
+- Widget content and metadata are managed through board interactions.
+- Images can be added by dropping files onto the note board.
 
 ## Building
 
-To build the project run:
+Create a production build with:
 
 ```bash
-ng build
+npm run build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Testing
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Run the test suite with:
 
 ```bash
-ng test
+npm test
 ```
 
-## Running end-to-end tests
+## License
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+No license has been specified yet.

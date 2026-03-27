@@ -1,0 +1,4 @@
+@reference '../../../tailwind.css';
+:host {
+  @apply flex flex-col h-full w-[300px] bg-sidebar;
+}

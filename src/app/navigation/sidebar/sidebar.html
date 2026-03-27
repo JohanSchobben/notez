@@ -1,0 +1,29 @@
+<div class="flex items-center mt-8 px-4">
+  <img width="53" height="96" ngSrc="/logo.png" alt="logo"/>
+  <div class="ml-4">
+    <h2 class="font-extrabold text-3xl text-indigo-600">Notez</h2>
+    <h3 class="text-sm">Your notes app!</h3>
+  </div>
+</div>
+<div class="px-4 mt-12">
+  <button class="justify-center gap-2
+  w-full py-3 px-4
+  bg-indigo-600 hover:bg-indigo-700
+  text-white font-manrope font-semibold text-sm
+  rounded-lg shadow-sm
+  transition-all duration-200
+  active:scale-[0.98]">
+    + New board
+  </button>
+</div>
+<nav class="mt-12 px-4 flex flex-col gap">
+  <ntz-sidebar-link label="All boards" icon="dashboard" route="/" />
+  <ntz-sidebar-link label="Recent" icon="history" route="/recent" />
+  <ntz-sidebar-link label="Favourites" icon="star" route="/favourites" />
+  <ntz-sidebar-link label="Archived" icon="archive" route="/archived" />
+</nav>
+
+<nav class="mt-auto mb-8">
+  <ntz-sidebar-link label="Settings" icon="settings" route="/settings" />
+  <ntz-sidebar-link label="Help" icon="help" route="/help" />
+</nav>

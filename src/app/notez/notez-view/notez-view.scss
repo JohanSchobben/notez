@@ -1,3 +1,8 @@
 :host {
   @apply block h-full w-full;
 }
+.dotted-background {
+  background-image: radial-gradient(#ccc 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-color: #ffffff;
+}
