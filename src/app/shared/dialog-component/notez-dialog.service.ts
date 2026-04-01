@@ -13,6 +13,10 @@ export class NotezDialog {
     return this.dialog.open<T>(component, {
       container: DialogComponent,
       data: config?.data || null,
+      minWidth: '300px',
+      width: '800px',
+      maxWidth: '1200px',
+      minHeight: '300px',
     });
   }
 

@@ -3,7 +3,7 @@ import {Note} from '../../shared/models/note';
 
 export const createNote = createAction(
   '[NotezExplorer] Create Note',
-  props<{ title: string; description: string, tags: string[] }>()
+  props<{ title: string; description: string | undefined, tags: string[] | undefined }>()
 );
 
 export const deleteNote = createAction(

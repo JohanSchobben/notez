@@ -8,7 +8,13 @@ import {CdkPortalOutlet} from '@angular/cdk/portal';
     CdkPortalOutlet
   ],
   templateUrl: './dialog-component.html',
-  styleUrl: './dialog-component.scss',
+  styles: [
+    `
+      :host {
+        @apply block h-full w-full;
+      }
+    `
+  ]
 })
 export class DialogComponent extends CdkDialogContainer {
 

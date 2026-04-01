@@ -1,0 +1,13 @@
+<ntz-label [for]="id" icon="sell">Tags</ntz-label>
+<div cdkDropList
+     class="py-2 h-10.25"
+     cdkDropListOrientation="horizontal"
+     (cdkDropListDropped)="changeOrder($event)">
+  @for (tag of value(); track tag) {
+    <ntz-tag cdkDrag [name]="tag" class="mx-1 cursor-grab" removeAble (removed)="removeTag(tag)"/>
+  }
+  @empty {
+    <span class="text-slate-400 text-xs align-middle italic ">No tags yet</span>
+  }
+</div>
+<input ntzInput [id]="id" placeholder="Start typing to add tags..." (keydown.enter)="$event.preventDefault()" (keyup.enter)="addTag($event)" (focus)="emitTouched()"/>

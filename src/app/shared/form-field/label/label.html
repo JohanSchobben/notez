@@ -1,0 +1,8 @@
+<label [for]="for()" class="flex items-center text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+  @if (icon()) {
+    <span class="material-symbols-outlined text-[11px] mr-1">
+          {{ icon() }}
+    </span>
+  }
+  <ng-content/>
+</label>

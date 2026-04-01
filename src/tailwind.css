@@ -3,4 +3,9 @@
 @theme {
   --color-sidebar: #F1F5F9;
   --color-primary:#5148D7;
+  --font-display: 'Manrope', sans-serif;
+}
+
+.cdk-overlay-backdrop {
+  @apply backdrop-blur-xs;
 }

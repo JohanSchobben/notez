@@ -1,1 +1,24 @@
-<p class="text-red-400">new-note-dialog works!</p>
+<ntz-dialog-header heading="Create a new Note" />
+<ntz-dialog-body>
+  <form [formGroup]="NoteForm" id="new-note-form" class="flex flex-col gap-4" (submit)="createNote()">
+    <div>
+      <ntz-label for="name" icon="label">
+        Name
+      </ntz-label>
+      <input formControlName="name" ntzInput id="name" placeholder="E.g. Trainings plan" />
+    </div>
+    <div>
+      <ntz-label for="description" icon="notes">
+        Description
+      </ntz-label>
+      <textarea ntzInput formControlName="description" id="description" class="resize-y" placeholder="What is the purpose of this note?"></textarea>
+    </div>
+    <div>
+      <ntz-tag-input formControlName="tags" />
+    </div>
+  </form>
+</ntz-dialog-body>
+<ntz-dialog-actions>
+  <button ntzButton color="text" (click)="closeDialog()">Cancel</button>
+  <button ntzButton type="submit" form="new-note-form">Create</button>
+</ntz-dialog-actions>
