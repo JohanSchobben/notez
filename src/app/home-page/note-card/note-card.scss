@@ -1,0 +1,5 @@
+@reference '../../../tailwind.css';
+
+:host {
+  @apply bg-white border border-slate-100 flex flex-col h-full min-h-full rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300
+}

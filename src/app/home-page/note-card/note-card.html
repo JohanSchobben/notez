@@ -1,0 +1,24 @@
+@let $note = note();
+<div class="flex justify-start items-center mb-12 gap-2">
+  @for (tag of $note.tags; track tag) {
+    <ntz-tag [name]="tag" class="mr-2"/>
+  }
+</div>
+<h3
+  [class.text-3xl]="!narrow()"
+  [class.text-xl]="narrow()"
+  [class.-mt-[4px]]="!narrow()"
+  class="font-bold text-slate-900 mb-6 leading-tight">{{ $note.title }}</h3>
+<p class="text-slate-500 text-sm leading-relaxed line-clamp-3 flex-1 mb-12">{{ $note.description}}</p>
+<div [class.justify-end]="!narrow()" [class.justify-start]="narrow()" class="mt-auto flex items-center">
+    <span class="material-symbols-outlined text-[11px] mr-1">
+      history
+    </span>
+  <span class="text-[11px] text-slate-400 font-medium">
+    @if ($note.lastOpenedAt) {
+      Updated {{ $note.lastOpenedAt | timeAgo }}
+    } @else {
+      Created {{ $note.createdAt | timeAgo }}
+    }
+  </span>
+</div>
