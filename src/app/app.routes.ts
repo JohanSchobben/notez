@@ -4,5 +4,5 @@ import {NotezView} from './notez/notez-view/notez-view';
 
 export const routes: Routes = [
   { path: '', component: HomePage},
-  { path: 'note/:id', component: NotezView}
+  { path: ':id', component: NotezView}
 ];

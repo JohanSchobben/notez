@@ -9,17 +9,21 @@ import {BaseWidget} from '../../widgets/base-widget/base-widget';
 import {Position, Widget, WidgetType} from '../core/models/widget';
 import {addWidget, loadWidgets, moveBack, moveForward, moveWidget, removeWidget, updateMeta} from '../core/notez.actions';
 import {getContainerHeight, getContainerWidth, getNextElevation, getStartPosition} from '../core/notez.selector';
-import {loadNotez} from '../../notez-explorer/core/notez-explorer.actions';
+import {deleteNote, loadNotez} from '../../notez-explorer/core/notez-explorer.actions';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {WIDGET_DEFAULTS, WIDGET_DEFAULTS_ACCESSOR} from '../../widgets/widget-defaults';
 import {canRedo, canUndo, getCurrentWidgets} from '../undo-redo/undo-redo.selector';
 import {undo, redo} from '../undo-redo/undo-redo.actions';
+import {Header} from '../../shared/header/header';
+import {NotezControl} from '../notez-control/notez-control';
 
 @Component({
   selector: 'ntz-notez-view',
   imports: [
     AsyncPipe,
     BaseWidget,
+    Header,
+    NotezControl,
   ],
   templateUrl: './notez-view.html',
   styleUrl: './notez-view.scss',
@@ -64,8 +68,6 @@ export class NotezView {
         switchMap(params => this.store.select(selectNotezById(params['id']))),
         filter(Boolean)
       );
-
-
 
     this.startPosition$ = this.store.select(getStartPosition);
 
@@ -157,9 +159,7 @@ export class NotezView {
         }
         this.store.dispatch(addWidget({widget}))
       })
-
     }
-
   }
 
   @HostListener('window:dragover', ['$event'])
@@ -227,5 +227,9 @@ export class NotezView {
 
   protected redo(): void {
     this.store.dispatch(redo());
+  }
+
+  protected deleteBoard(): void {
+    this.store.dispatch(deleteNote({id: this.route.snapshot.params['id']!}));
   }
 }

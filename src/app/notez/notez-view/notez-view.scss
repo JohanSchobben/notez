@@ -1,8 +1,7 @@
+@reference '../../../tailwind.css';
+
 :host {
-  @apply block h-full w-full;
-}
-.dotted-background {
-  background-image: radial-gradient(#ccc 1px, transparent 1px);
+  @apply block h-full w-full bg-indigo-50;
+  background-image: radial-gradient(var(--color-slate-900) 1px, transparent 1px);
   background-size: 20px 20px;
-  background-color: #ffffff;
 }

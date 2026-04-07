@@ -5,7 +5,7 @@ import {booleanAttribute, Component, HostBinding, input} from '@angular/core';
   template: '<ng-content/>',
   host: {
     class: `justify-center gap-2
-    py-3 px-4 font-semibold text-sm
+    px-4 font-semibold text-sm
     rounded-lg transition-all duration-200
     active:scale-[0.98]`
   }
@@ -13,6 +13,7 @@ import {booleanAttribute, Component, HostBinding, input} from '@angular/core';
 export class Button {
   color = input<"primary" | "text">("primary");
   block = input(false, {transform: booleanAttribute});
+  dense = input(false, {transform: booleanAttribute});
 
   @HostBinding('class')
   get hostClasses() {
@@ -25,6 +26,12 @@ export class Button {
 
     if (this.block()) {
       classes += " w-full"
+    }
+
+    if (this.dense()) {
+      classes += " py-1"
+    } else {
+      classes += " py-3"
     }
     return classes;
   }

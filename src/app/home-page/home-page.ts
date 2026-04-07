@@ -6,13 +6,15 @@ import {Note} from '../shared/models/note';
 import {Button} from '../shared/button';
 import {NoteCard} from './note-card/note-card';
 import {RouterLink} from '@angular/router';
+import {Header} from '../shared/header/header';
 
 @Component({
   selector: 'ntz-home-page',
   imports: [
     Button,
     NoteCard,
-    RouterLink
+    RouterLink,
+    Header
   ],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',

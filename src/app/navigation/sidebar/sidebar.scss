@@ -1,4 +1,6 @@
 @reference '../../../tailwind.css';
+
 :host {
-  @apply flex h-full bg-indigo-50;
+  @apply grid h-full w-full bg-indigo-50;
+  grid-template-columns: 272px 1fr;
 }

@@ -1,0 +1,5 @@
+@reference '../../../tailwind.css';
+
+:host {
+  @apply fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 bg-white/80 backdrop-blur-2xl p-1 rounded-xl border border-slate-200/20 shadow-2xl;
+}

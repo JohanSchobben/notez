@@ -1,0 +1,27 @@
+<div class="flex items-center pl-2 pr-1">
+  <button dense ntzIconButton name="undo" [disabled]="canUndo()" (click)="emitUndo()"></button>
+  <button dense ntzIconButton name="redo" [disabled]="canRedo()" (click)="emitRedo()"></button>
+</div>
+
+<div class="w-px h-8 bg-slate-200/50 mx-1"></div>
+
+<ng-template #menu>
+  <div cdkMenu class="px-1 py-3 grid grid-cols-3 gap-1 place-items-center  bg-white/80 backdrop-blur-2xl rounded-xl border border-slate-200/20 shadow-2xl">
+    @for (type of creatableWidgetTypes; track type.key) {
+      <button cdkMenuItem class="flex flex-col items-center active:bg-slate-400 hover:bg-slate-200 focus:bg-slate-300 rounded-xl px-3 py-1 focus:outline-none transition-all duration-200" (click)="createWidget(type)">
+        <ntz-icon [name]="type.icon" size="40"/>
+        <span class="font-manrope text-sm">{{ type.label }}</span>
+      </button>
+    }
+  </div>
+</ng-template>
+<button ntzButton dense class="flex items-center gap-2" [cdkMenuPosition]="[{originX: 'center', originY: 'top', overlayX: 'center', overlayY: 'bottom', offsetY: -8}]" [cdkMenuTriggerFor]="menu">
+  <ntz-icon name="add_circle" size="32"/>
+  <span class="font-manrope font-bold text-sm">ADD WIDGET</span>
+</button>
+
+<div class="w-px h-8 bg-slate-200/50 mx-1"></div>
+
+<div class="flex items-center pl-1 pr-2">
+  <button ntzIconButton dense name="delete" (click)="emitDelete()"></button>
+</div>
